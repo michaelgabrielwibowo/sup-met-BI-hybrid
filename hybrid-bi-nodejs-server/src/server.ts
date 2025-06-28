@@ -7,6 +7,8 @@ dotenv.config();
 
 import authRoutes from './routes/auth.routes'; // Import the auth routes
 
+import path from 'path';
+
 const app: Express = express();
 const PORT = process.env.PORT || 3000; // Backend server port
 
@@ -29,6 +31,10 @@ const corsOptions: cors.CorsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json()); // Middleware to parse JSON bodies
 
+// Serve static frontend files
+const frontendPath = path.join(__dirname, '../../metabase-ui/build');
+app.use(express.static(frontendPath));
+
 // Basic Health Check Endpoint
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'UP', message: 'Backend server is running' });
@@ -36,6 +42,15 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// Fallback: serve index.html for any non-API route (for SPA routing)
+app.get('*', (req: Request, res: Response) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  } else {
+    res.status(404).json({ message: 'API route not found' });
+  }
+});
 
 
 // Placeholder for future API routes
