@@ -1,0 +1,14 @@
+{
+  "name": "metabase-question-builder",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-use": "^17.4.0",
+    "classnames": "^2.3.1",
+    "prop-types": "^15.8.1",
+    "underscore": "^1.13.6"
+  }
+}
