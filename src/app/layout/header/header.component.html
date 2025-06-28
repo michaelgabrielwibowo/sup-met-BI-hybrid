@@ -1,0 +1,28 @@
+<mat-toolbar color="primary" class="app-header">
+  <button mat-icon-button (click)="onToggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Hybrid BI Tool (Angular)</span>
+  <span class="spacer"></span>
+
+  <div *ngIf="authService.isAuthenticated()">
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span>Profile (TODO)</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout Google</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <button mat-button *ngIf="!authService.isAuthenticated()" (click)="authService.getGoogleAuthUrl().startsWith('http') ? (window.location.href = authService.getGoogleAuthUrl()) : null">
+    <mat-icon>login</mat-icon>
+    Login with Google
+  </button>
+</mat-toolbar>

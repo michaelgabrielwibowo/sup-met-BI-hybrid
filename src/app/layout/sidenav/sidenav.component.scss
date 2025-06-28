@@ -1,0 +1,13 @@
+.active-list-item {
+  // background-color: rgba(0, 0, 0, 0.04); // Example active item background
+  color: mat.get-color-from-palette(mat.$indigo-palette, 500) !important; // Example active item text color
+  font-weight: bold;
+}
+
+mat-icon {
+  margin-right: 8px;
+}
+
+hr {
+  margin: 16px 0;
+}

@@ -1,0 +1,42 @@
+<div>
+  <h2>Data Sources Management</h2>
+  <p>Connect to various data sources to start your analysis.</p>
+
+  <div style="margin-bottom: 20px;">
+    <h3>Google Drive / Sheets</h3>
+    <button mat-raised-button color="primary" (click)="connectGoogle()" *ngIf="!authService.isAuthenticated()">
+      <mat-icon>link</mat-icon> Connect to Google
+    </button>
+    <div *ngIf="authService.isAuthenticated()">
+      <p style="color: green;">
+        <mat-icon>check_circle</mat-icon> Connected to Google
+      </p>
+      <button mat-stroked-button color="primary" (click)="manageGoogleSheets()">
+        Manage Google Sheets (Placeholder)
+      </button>
+      <button mat-stroked-button color="warn" (click)="authService.logout()" style="margin-left: 10px;">
+        Disconnect Google
+      </button>
+    </div>
+    <p *ngIf="!authService.isAuthenticated()">
+      Access your Google Sheets data.
+    </p>
+  </div>
+
+  <hr>
+
+  <div style="margin-bottom: 20px;">
+    <h3>Local Excel Files</h3>
+    <p>Upload and analyze data from .xlsx files.</p>
+    <button mat-raised-button disabled>Upload Excel (Coming Soon)</button>
+  </div>
+
+  <hr>
+
+  <div style="margin-bottom: 20px;">
+    <h3>Databases via Superset</h3>
+    <p>Connect to SQL databases managed by your Superset instance.</p>
+    <button mat-raised-button disabled>Connect to Superset DB (Coming Soon)</button>
+  </div>
+
+</div>

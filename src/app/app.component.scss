@@ -1,0 +1,21 @@
+// No specific styles for app.component itself here,
+// as layout is managed by app-container, app-header, etc. from global styles
+// and specific layout component styles.
+
+// Ensure mat-sidenav-container takes full height
+:host {
+  display: block;
+  height: 100%;
+}
+
+.app-sidenav-container {
+  height: calc(100% - 64px); // Assuming header is 64px. Adjust if header height changes.
+}
+
+.app-sidenav {
+  // Sidenav specific styles are better placed in sidenav.component.scss
+}
+
+.app-content {
+  // Content specific padding is in global styles or can be added here if needed
+}
