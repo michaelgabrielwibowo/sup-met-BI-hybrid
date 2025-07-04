@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Superset Embed Host</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        #superset-container { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="superset-container"></div>
+
+    <!-- IMPORTANT: Replace with the actual path to your Superset Embedded SDK -->
+    <script src="https://unpkg.com/@superset-ui/embedded-sdk"></script>
+    <script>
+        async function fetchGuestTokenFromBackend(dashboardId) {
+            // In a real scenario, this backend endpoint would authenticate the request
+            // (e.g., via session cookie from the parent Metabase iframe context, if possible,
+            // or some other means if this intermediate page is on a different domain)
+            // and then request a guest token from Superset's /security/guest_token/ endpoint.
+
+            // For this PoC, we'll assume a placeholder URL and a successful response.
+            // Replace YOUR_BACKEND_PORT and YOUR_SUPERSET_DOMAIN accordingly.
+            const tokenApiUrl = `http://localhost:YOUR_BACKEND_PORT/api/superset-guest-token?dashboard_id=${dashboardId}`;
+
+            try {
+                // This is a conceptual backend call.
+                // In a real setup, this backend would call Superset's /security/guest_token
+                // const response = await fetch(tokenApiUrl);
+                // if (!response.ok) {
+                //     throw new Error(`Error fetching guest token: ${response.statusText}`);
+                // }
+                // const data = await response.json();
+                // return data.token;
+
+                // For PoC, returning a placeholder token.
+                // A real token is a JWT.
+                console.log(`[EmbedHost] Conceptually fetching guest token for dashboard ${dashboardId} from ${tokenApiUrl}`);
+                return "YOUR_PLACEHOLDER_GUEST_TOKEN"; // Replace with a real token if testing against live Superset
+            } catch (error) {
+                console.error("[EmbedHost] Error in fetchGuestToken:", error);
+                throw error;
+            }
+        }
+
+        async function embedSupersetDashboard() {
+            const mountPoint = document.getElementById("superset-container");
+            if (!mountPoint) {
+                console.error("[EmbedHost] Mount point #superset-container not found.");
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const dashboardId = urlParams.get('dashboard_id'); // e.g., "abc12345-abcd-1234-efgh-abcdef012345" (UUID)
+            const supersetDomain = urlParams.get('superset_domain'); // e.g., "http://localhost:8088"
+
+            if (!dashboardId) {
+                mountPoint.innerHTML = "Error: <code>dashboard_id</code> URL parameter is missing.";
+                console.error("[EmbedHost] dashboard_id is missing from URL parameters.");
+                return;
+            }
+            if (!supersetDomain) {
+                mountPoint.innerHTML = "Error: <code>superset_domain</code> URL parameter is missing.";
+                console.error("[EmbedHost] superset_domain is missing from URL parameters.");
+                return;
+            }
+
+            try {
+                console.log(`[EmbedHost] Embedding dashboard: ${dashboardId} from ${supersetDomain}`);
+                await supersetEmbeddedSdk.embedDashboard({
+                    id: dashboardId, // UUID of the dashboard
+                    supersetDomain: supersetDomain,
+                    mountPoint: mountPoint,
+                    fetchGuestToken: () => fetchGuestTokenFromBackend(dashboardId),
+                    dashboardUiConfig: {
+                        hideTitle: true,
+                        hideTab: true,
+                        hideChartControls: true,
+                        // To make it appear like a single chart, ensure the target dashboard in Superset
+                        // ideally has only one chart or is configured to show only the desired chart.
+                        // The 'filters' visibility can also be controlled here if needed:
+                        // filters: {
+                        //   visible: false,
+                        //   expanded: false,
+                        // }
+                    },
+                    debug: true // Enable for more console logs from the SDK
+                });
+                console.log("[EmbedHost] Dashboard embedding initiated.");
+            } catch (error) {
+                mountPoint.innerHTML = `Error embedding Superset dashboard: ${error.message}`;
+                console.error("[EmbedHost] Error calling embedDashboard:", error);
+            }
+        }
+
+        // Automatically embed on load
+        window.addEventListener('load', embedSupersetDashboard);
+    </script>
+</body>
+</html>
